@@ -1,1 +1,7 @@
-pip install streamlit
+streamlit
+plotly
+plotly-geo
+geopandas==0.3.0
+pyshp==1.2.10
+shapely==1.6.3
+
