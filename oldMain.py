@@ -32,7 +32,6 @@ else:
 
 
 
-
 fig = ff.create_choropleth(
     fips=fips, values=values, scope=['Texas'], show_state_data=True,
     colorscale=colorscale, binning_endpoints=endpts, round_legend_values=True,
