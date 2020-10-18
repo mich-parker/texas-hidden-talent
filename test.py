@@ -7,46 +7,12 @@ import time
 
 import plotly.figure_factory as ff
 
-df = pd.DataFrame({
-  'first column': [1, 2, 3, 4],
-  'second column': [10, 20, 30, 40]
-})
-
-df
-
-'Starting a long computation...'
-
-# Add a placeholder
-latest_iteration = st.empty()
-bar = st.progress(0)
-
-for i in range(20):
-  # Update the progress bar with each iteration.
-  latest_iteration.text(f'Iteration {i+1}')
-  bar.progress(i + 1)
-  time.sleep(0.1)
-
-'...and now we\'re done!'
-
-map_data = pd.DataFrame(
-    np.random.randn(1000, 2) / [50, 50] + [37.76, -122.4],
-    columns=['lat', 'lon'])
-
-st.map(map_data)
-
-start_color, end_color = st.select_slider(
-        'Select a range of color wavelength',
-        options=['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet'],
-        value=('red', 'blue'))
-
-st.write('You selected wavelengths between', start_color, 'and', end_color)
-
-
 df_sample = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/minoritymajority.csv')
 df_sample_r = df_sample[df_sample['STNAME'] == 'Texas']
+fips = df_sample_r['FIPS'].tolist()
 
 values = df_sample_r['TOT_POP'].tolist()
-fips = df_sample_r['FIPS'].tolist()
+
 
 endpts = list(np.mgrid[min(values):max(values):4j])
 colorscale = ["#030512","#1d1d3b","#323268","#3d4b94","#3e6ab0",
@@ -54,8 +20,6 @@ colorscale = ["#030512","#1d1d3b","#323268","#3d4b94","#3e6ab0",
 fig = ff.create_choropleth(
     fips=fips, values=values, scope=['Texas'], show_state_data=True,
     colorscale=colorscale, binning_endpoints=endpts, round_legend_values=True,
-    plot_bgcolor='rgb(229,229,229)',
-    paper_bgcolor='rgb(229,229,229)',
     legend_title='Population by County',
     county_outline={'color': 'rgb(255,255,255)', 'width': 0.5},
     exponent_format=True,
