@@ -18,7 +18,7 @@ for i in list(list1):
     prop = i.get('properties')
     curr = prop.get('STATE')
     fip = prop.get('STATE') + prop.get('COUNTY')
-    county = prop.get('NAME')
+    county = prop.get('NAME') + ' County'
     countylist.append(county)
     fipslist.append(fip)
     if curr != '48':
@@ -28,14 +28,15 @@ counties['features'] = list1
 
 names = pd.DataFrame()
 names['County Name'] = countylist
-names['fips'] = fipslist
+names['County'] = fipslist
 
 
-df = pd.read_csv("https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv",
-                   dtype={"fips": str})
-df = df.rename({'unemp':'val'})
+df = pd.read_csv("County Indices.csv",
+                   dtype={'County Number': str})
 
-df = pd.merge(names, df, on='fips', how='right')
+print(df.head())
+
+df = pd.merge(names, df, on='County Name', how='right')
 print(df.head())
 
 # Column names: "County" (fips code), "County Name", "Completion Rate", "Opportunity Index"
@@ -44,20 +45,24 @@ st.title('Texas\' Hidden Talent')
 st.text('A TAMU Datathon project by Michaela Matocha, Nathan Mandell, and Mihir.')
 graph_type = st.radio('Select a Metric', ['Completion rate','Opportunity index'])
 
+col = 'Grad Rate'
+range = (80,100)
 if graph_type == 'Completion rate':
     colorscale = "Aggrnyl"
-    col = 'Completion Rate'
+    col = 'Grad Rate'
+    range = (80,100)
     # values = df['Completion Rate']
     # endpts = list(np.mgrid[min(values):max(values):4j])
 else:
     colorscale = "Agsunset"
     col = 'Opportunity Index'
+    range = (-15,15)
     # values = df_sample_r['Opportunity Index']
     # endpts = list(np.mgrid[min(values):max(values):4j])
 
-fig = px.choropleth_mapbox(df, geojson=counties, locations='fips', color='unemp',
+fig = px.choropleth_mapbox(df, geojson=counties, locations='County', color=col,
                            color_continuous_scale=colorscale,
-                           range_color=(0, 12),
+                           range_color=range,
                            mapbox_style="carto-positron",
                            zoom=4, center = {"lat": 31.9686, "lon": -99.9018},
                            opacity=0.5,
